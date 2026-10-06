@@ -3,11 +3,16 @@ from typing import Optional, List, Dict, Any
 
 class CSESkillScores(BaseModel):
     logicalThinking: float = 0.0
+    booleanReasoning: float = 0.0
     problemSolving: float = 0.0
-    patternRecognition: float = 0.0
     algorithmicThinking: float = 0.0
-    programmingLogic: float = 0.0
-    decisionMaking: float = 0.0
+    planning: float = 0.0
+    patternRecognition: float = 0.0
+    constraintSolving: float = 0.0
+    numericalReasoning: float = 0.0
+    sequencing: float = 0.0
+    decisionMaking: Optional[float] = 0.0
+    programmingLogic: Optional[float] = 0.0
 
 class CSEGamePerformance(BaseModel):
     gameId: str

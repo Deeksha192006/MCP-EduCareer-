@@ -554,6 +554,73 @@ p, span, label, input, button {
   background: #f8fafc;
 }
 
+/* High-Contrast Dark Table Variant & Auto Dark within Dark Containers */
+.custom-table-dark,
+.table-dark,
+.dark-card .custom-table,
+.glass-card[style*="rgba(15, 23, 42"] .custom-table,
+.glass-card[style*="linear-gradient(135deg, rgba(15"] .custom-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.custom-table-dark th,
+.table-dark th,
+.dark-card .custom-table th,
+.glass-card[style*="rgba(15, 23, 42"] .custom-table th,
+.glass-card[style*="linear-gradient(135deg, rgba(15"] .custom-table th {
+  background: rgba(30, 41, 59, 0.85) !important;
+  color: #93c5fd !important;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  padding: 14px 18px;
+}
+
+.custom-table-dark td,
+.table-dark td,
+.dark-card .custom-table td,
+.glass-card[style*="rgba(15, 23, 42"] .custom-table td,
+.glass-card[style*="linear-gradient(135deg, rgba(15"] .custom-table td {
+  color: #f1f5f9 !important;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 14px 18px;
+}
+
+.custom-table-dark td strong,
+.table-dark td strong,
+.dark-card .custom-table td strong,
+.glass-card[style*="rgba(15, 23, 42"] .custom-table td strong,
+.glass-card[style*="linear-gradient(135deg, rgba(15"] .custom-table td strong {
+  color: #ffffff !important;
+}
+
+.custom-table-dark tr:hover,
+.table-dark tr:hover,
+.dark-card .custom-table tr:hover,
+.glass-card[style*="rgba(15, 23, 42"] .custom-table tr:hover,
+.glass-card[style*="linear-gradient(135deg, rgba(15"] .custom-table tr:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Cutoff Calculator Card */
+.cutoff-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 28px;
+}
+
 /* Modals */
 .modal-backdrop {
   position: fixed;

@@ -265,36 +265,36 @@ const AdminModels = ({ user }) => {
           Course-Wise Observed Pilot Metrics
         </h4>
         <div style={{ overflowX: 'auto', marginBottom: '32px' }}>
-          <table className="custom-table" style={{ width: '100%' }}>
+          <table className="custom-table custom-table-dark" style={{ width: '100%' }}>
             <thead>
               <tr>
-                <th>Course Name</th>
-                <th>Total Enrolled</th>
-                <th>Both Completed</th>
-                <th>Missing Written</th>
-                <th>Missing Game</th>
-                <th>Mean Game Score</th>
-                <th>Mean Written Score</th>
-                <th>Mean Final Score</th>
-                <th>Correlation (r)</th>
+                <th style={{ color: '#93c5fd' }}>Course Name</th>
+                <th style={{ color: '#93c5fd' }}>Total Enrolled</th>
+                <th style={{ color: '#93c5fd' }}>Both Completed</th>
+                <th style={{ color: '#93c5fd' }}>Missing Written</th>
+                <th style={{ color: '#93c5fd' }}>Missing Game</th>
+                <th style={{ color: '#93c5fd' }}>Mean Game Score</th>
+                <th style={{ color: '#93c5fd' }}>Mean Written Score</th>
+                <th style={{ color: '#93c5fd' }}>Mean Final Score</th>
+                <th style={{ color: '#93c5fd' }}>Correlation (r)</th>
               </tr>
             </thead>
             <tbody>
               {Object.entries(courseStats).map(([key, c]) => (
                 <tr key={key}>
-                  <td><strong>{c.courseName}</strong></td>
-                  <td>{c.totalEnrolled}</td>
+                  <td><strong style={{ color: '#ffffff', fontSize: '14px' }}>{c.courseName}</strong></td>
+                  <td><span style={{ color: '#f1f5f9', fontWeight: 600 }}>{c.totalEnrolled}</span></td>
                   <td>
-                    <span style={{ color: c.bothCompletedCount > 0 ? '#34d399' : '#94a3b8', fontWeight: 700 }}>
+                    <span style={{ color: c.bothCompletedCount > 0 ? '#34d399' : '#cbd5e1', fontWeight: 700, background: c.bothCompletedCount > 0 ? 'rgba(52, 211, 153, 0.15)' : 'rgba(255, 255, 255, 0.05)', padding: '3px 8px', borderRadius: '6px' }}>
                       {c.bothCompletedCount}
                     </span>
                   </td>
-                  <td><span style={{ color: c.missingWrittenCount > 0 ? '#f59e0b' : '#94a3b8' }}>{c.missingWrittenCount}</span></td>
-                  <td><span style={{ color: c.missingGameCount > 0 ? '#f59e0b' : '#94a3b8' }}>{c.missingGameCount}</span></td>
-                  <td>{c.meanGameScore !== null ? `${c.meanGameScore}` : '—'}</td>
-                  <td>{c.meanWrittenScore !== null ? `${c.meanWrittenScore}` : '—'}</td>
-                  <td>{c.meanFinalScore !== null ? <strong>{c.meanFinalScore}</strong> : '—'}</td>
-                  <td>{c.gameWrittenCorrelation !== null ? `${c.gameWrittenCorrelation}` : 'Insufficient Data (N<3)'}</td>
+                  <td><span style={{ color: c.missingWrittenCount > 0 ? '#fbbf24' : '#94a3b8', fontWeight: 600 }}>{c.missingWrittenCount}</span></td>
+                  <td><span style={{ color: c.missingGameCount > 0 ? '#fbbf24' : '#94a3b8', fontWeight: 600 }}>{c.missingGameCount}</span></td>
+                  <td><span style={{ color: c.meanGameScore !== null ? '#38bdf8' : '#94a3b8', fontWeight: 600 }}>{c.meanGameScore !== null ? `${c.meanGameScore}` : '—'}</span></td>
+                  <td><span style={{ color: c.meanWrittenScore !== null ? '#c084fc' : '#94a3b8', fontWeight: 600 }}>{c.meanWrittenScore !== null ? `${c.meanWrittenScore}` : '—'}</span></td>
+                  <td>{c.meanFinalScore !== null ? <strong style={{ color: '#34d399', fontSize: '14.5px' }}>{c.meanFinalScore}</strong> : <span style={{ color: '#94a3b8' }}>—</span>}</td>
+                  <td><span style={{ color: c.gameWrittenCorrelation !== null ? '#38bdf8' : '#94a3b8', fontStyle: c.gameWrittenCorrelation !== null ? 'normal' : 'italic' }}>{c.gameWrittenCorrelation !== null ? `${c.gameWrittenCorrelation}` : 'Insufficient Data (N<3)'}</span></td>
                 </tr>
               ))}
             </tbody>
@@ -454,7 +454,7 @@ const AdminModels = ({ user }) => {
       {/* Action Banner: Retraining Trigger */}
       <div className="banner-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '4px', color: '#ffffff' }}>Continuous Model Pipeline</h3>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '4px', color: 'var(--text-main)' }}>Continuous Model Pipeline</h3>
           <p className="banner-subtitle">
             Retrain candidate classifiers on validated student outcomes & counsellor reviews.
           </p>
@@ -478,13 +478,13 @@ const AdminModels = ({ user }) => {
       {/* Charts Grid */}
       <div className="charts-grid">
         <div className="glass-card">
-          <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Model Comparison (Accuracy % vs F1 %)</h3>
+          <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: 'var(--text-main)' }}>Model Comparison (Accuracy % vs F1 %)</h3>
           <div style={{ width: '100%', height: 260 }}>
             <ResponsiveContainer>
               <BarChart data={modelComparisonChart}>
-                <XAxis dataKey="name" stroke="#9ca3af" fontSize={11} />
-                <YAxis domain={[0, 100]} stroke="#9ca3af" fontSize={11} />
-                <Tooltip contentStyle={{ background: '#111827', border: '1px solid rgba(99, 102, 241, 0.4)', borderRadius: '8px' }} />
+                <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
+                <YAxis domain={[0, 100]} stroke="#64748b" fontSize={11} />
+                <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-main)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                 <Bar dataKey="accuracy" name="Accuracy (%)" fill="#10b981" radius={[6, 6, 0, 0]} />
                 <Bar dataKey="f1" name="F1-Score (%)" fill="#6366f1" radius={[6, 6, 0, 0]} />
               </BarChart>
@@ -493,13 +493,13 @@ const AdminModels = ({ user }) => {
         </div>
 
         <div className="glass-card">
-          <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Feature Importance Weights (%)</h3>
+          <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: 'var(--text-main)' }}>Feature Importance Weights (%)</h3>
           <div style={{ width: '100%', height: 260 }}>
             <ResponsiveContainer>
               <BarChart data={featureImpChart} layout="vertical">
-                <XAxis type="number" domain={[0, 50]} stroke="#9ca3af" fontSize={11} />
-                <YAxis dataKey="name" type="category" stroke="#9ca3af" width={140} fontSize={11} />
-                <Tooltip contentStyle={{ background: '#111827', border: '1px solid rgba(99, 102, 241, 0.4)', borderRadius: '8px' }} />
+                <XAxis type="number" domain={[0, 50]} stroke="#64748b" fontSize={11} />
+                <YAxis dataKey="name" type="category" stroke="#64748b" width={140} fontSize={11} />
+                <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-main)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                 <Bar dataKey="importance" fill="#f59e0b" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>

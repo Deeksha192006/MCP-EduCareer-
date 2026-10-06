@@ -22,28 +22,39 @@ def test_cse_assessment_flow():
     assert len(data["gamePerformance"]) == 5
     assert data["gamesAttempted"] == 0
 
+    expected_game_ids = [
+        "cse_xor_gate",
+        "cse_river_crossing",
+        "cse_water_jug",
+        "cse_missionaries_cannibals",
+        "cse_tower_of_hanoi"
+    ]
+    actual_ids = [g["gameId"] for g in data["gamePerformance"]]
+    assert actual_ids == expected_game_ids
+
     # 2. Get Assessment
     get_res = client.get(f"/api/cse/assessment/{student_id}")
     assert get_res.status_code == 200
     assert get_res.json()["studentId"] == student_id
 
-    # 3. Submit Game Performance
+    # 3. Submit Game Performance for XOR Gate
     game_payload = {
         "studentId": student_id,
-        "gameId": "cse_logic_01",
+        "gameId": "cse_xor_gate",
         "score": 90.0,
         "maxScore": 100.0,
         "accuracy": 0.90,
-        "timeTaken": 60,
-        "attempts": 1,
-        "difficulty": "medium"
+        "timeTaken": 45,
+        "attempts": 5,
+        "difficulty": "easy"
     }
     submit_res = client.post("/api/cse/assessment/submit-game", json=game_payload)
     assert submit_res.status_code == 200
     sub_data = submit_res.json()
     assert sub_data["gamesAttempted"] == 1
-    assert sub_data["skillScores"]["logicalThinking"] > 0
-    assert sub_data["skillScores"]["problemSolving"] > 0
+    assert sub_data["skillScores"]["logicalThinking"] == 90.0
+    assert sub_data["skillScores"]["booleanReasoning"] == 90.0
+    assert sub_data["skillScores"]["patternRecognition"] == 90.0
 
     # 4. Complete Assessment
     comp_res = client.post("/api/cse/assessment/complete", json={"studentId": student_id})

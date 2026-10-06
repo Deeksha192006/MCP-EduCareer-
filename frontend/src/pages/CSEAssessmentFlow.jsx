@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cseAPI } from '../services/api';
 import { CSE_GAMES_REGISTRY } from '../data/cseGamesRegistry';
-import ShortestPathGame from '../components/cse/ShortestPathGame';
-import OddOneOutGame from '../components/cse/OddOneOutGame';
-import DebugCodeGame from '../components/cse/DebugCodeGame';
-import LogicSequenceGame from '../components/cse/LogicSequenceGame';
-import AlgorithmPuzzleGame from '../components/cse/AlgorithmPuzzleGame';
+import XORGateGame from '../components/cse/XORGateGame';
+import RiverCrossingGame from '../components/cse/RiverCrossingGame';
+import WaterJugGame from '../components/cse/WaterJugGame';
+import MissionariesCannibalsGame from '../components/cse/MissionariesCannibalsGame';
+import TowerOfHanoiGame from '../components/cse/TowerOfHanoiGame';
 import { CheckCircle2, Clock, Play, ArrowRight, ArrowLeft, ShieldAlert, Award, ChevronRight, RefreshCw, BarChart2 } from 'lucide-react';
 
 const CSEAssessmentFlow = ({ user }) => {
@@ -105,18 +105,18 @@ const CSEAssessmentFlow = ({ user }) => {
 
   const renderCurrentGameComponent = () => {
     switch (activeGame.gameId) {
-      case 'cse_logic_01':
-        return <ShortestPathGame onGameComplete={handleInteractiveGameComplete} />;
-      case 'cse_pattern_02':
-        return <OddOneOutGame onGameComplete={handleInteractiveGameComplete} />;
-      case 'cse_code_03':
-        return <DebugCodeGame onGameComplete={handleInteractiveGameComplete} />;
-      case 'cse_algo_04':
-        return <LogicSequenceGame onGameComplete={handleInteractiveGameComplete} />;
-      case 'cse_puzzle_05':
-        return <AlgorithmPuzzleGame onGameComplete={handleInteractiveGameComplete} />;
+      case 'cse_xor_gate':
+        return <XORGateGame onGameComplete={handleInteractiveGameComplete} />;
+      case 'cse_river_crossing':
+        return <RiverCrossingGame onGameComplete={handleInteractiveGameComplete} />;
+      case 'cse_water_jug':
+        return <WaterJugGame onGameComplete={handleInteractiveGameComplete} />;
+      case 'cse_missionaries_cannibals':
+        return <MissionariesCannibalsGame onGameComplete={handleInteractiveGameComplete} />;
+      case 'cse_tower_of_hanoi':
+        return <TowerOfHanoiGame onGameComplete={handleInteractiveGameComplete} />;
       default:
-        return <ShortestPathGame onGameComplete={handleInteractiveGameComplete} />;
+        return <XORGateGame onGameComplete={handleInteractiveGameComplete} />;
     }
   };
 
@@ -205,7 +205,7 @@ const CSEAssessmentFlow = ({ user }) => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
           <div>
             <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '12px', background: '#eff6ff', color: 'var(--primary)', border: '1px solid #bfdbfe', fontWeight: '700' }}>
-              GAME {currentStepIndex + 1} OF 5 (3 ROUNDS PER GAME)
+              GAME {currentStepIndex + 1} OF 5
             </span>
             <h2 style={{ fontSize: '24px', fontWeight: '800', marginTop: '10px', marginBottom: '4px', color: '#0f172a' }}>
               {activeGame.gameName}

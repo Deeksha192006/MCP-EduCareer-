@@ -442,7 +442,7 @@ const Student12thGuidance = ({ user }) => {
                     <span className="badge badge-potential">{c.duration || '4 Years B.E / B.Tech'}</span>
                     {idx === 0 && <span className="badge badge-high-performer">🔥 Top Match</span>}
                   </div>
-                  <h3 style={{ fontSize: '19px', fontWeight: 800, color: '#ffffff' }}>{c.course}</h3>
+                  <h3 style={{ fontSize: '19px', fontWeight: 800, color: 'var(--text-main)' }}>{c.course}</h3>
                   <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
                     Degree: <span style={{ color: 'var(--text-main)', fontWeight: 600 }}>{c.degree_type}</span> | Stream: <span style={{ color: 'var(--text-main)', fontWeight: 600 }}>{c.domain}</span>
                   </p>
@@ -504,7 +504,7 @@ const Student12thGuidance = ({ user }) => {
             {careerDetail && (
               <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--border-color)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#ffffff' }}>{careerDetail.title}</h3>
+                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-main)' }}>{careerDetail.title}</h3>
                   <span style={{ fontSize: '12px', color: '#34d399', fontWeight: 700, background: 'rgba(16, 185, 129, 0.15)', padding: '4px 10px', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                     High Global Demand
                   </span>
@@ -591,7 +591,7 @@ const Student12thGuidance = ({ user }) => {
                     {isDone ? <CheckSquare size={16} /> : <Square size={16} />}
                   </button>
                 </div>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginTop: '4px' }}>{rm.focus}</h4>
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-main)', marginTop: '4px' }}>{rm.focus}</h4>
                 <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: '1.4', marginTop: '4px' }}>{rm.action}</p>
               </div>
             );
@@ -618,7 +618,7 @@ const Student12thGuidance = ({ user }) => {
                   <span style={{ fontSize: '12px', color: '#ec4899', fontWeight: 700 }}>Step {quizStep + 1}</span>
                 </div>
 
-                <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#ffffff', marginBottom: '16px' }}>
+                <h4 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-main)', marginBottom: '16px' }}>
                   {quizQuestions[quizStep].q}
                 </h4>
 
@@ -656,7 +656,7 @@ const Student12thGuidance = ({ user }) => {
                 <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'linear-gradient(135deg, #ec4899, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white' }}>
                   <Award size={32} />
                 </div>
-                <h3 style={{ fontSize: '22px', fontWeight: 800, color: '#ffffff' }}>Your Recommended Engineering Stream:</h3>
+                <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--text-main)' }}>Your Recommended Engineering Stream:</h3>
                 <div style={{ fontSize: '28px', fontWeight: 800, color: '#ec4899', margin: '12px 0', fontFamily: "'Outfit', sans-serif" }}>
                   {quizResult}
                 </div>

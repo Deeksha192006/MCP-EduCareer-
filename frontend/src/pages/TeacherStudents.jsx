@@ -86,7 +86,7 @@ const TeacherStudents = ({ user }) => {
             {filteredStudents.map((st) => (
               <tr key={st.id || st._id}>
                 <td>
-                  <div style={{ fontWeight: '600', color: 'white' }}>{st.name}</div>
+                  <div style={{ fontWeight: '600', color: 'var(--text-main)' }}>{st.name}</div>
                   <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{st.email}</div>
                 </td>
                 <td><b>{st.academic?.overall_percentage}%</b></td>

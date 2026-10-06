@@ -88,7 +88,7 @@ const CounsellorDashboard = ({ user }) => {
               <UserCheck size={16} />
               <span>Counsellor Human-in-the-Loop Validation Portal</span>
             </div>
-            <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#ffffff' }}>Counsellor Review & Feedback Workspace</h1>
+            <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-main)' }}>Counsellor Review & Feedback Workspace</h1>
             <p className="banner-subtitle">Review AI-generated 12th recommendations, add counsellor comments, suggest alternative pathways, and validate student decisions.</p>
           </div>
         </div>
@@ -121,7 +121,7 @@ const CounsellorDashboard = ({ user }) => {
                       {st.name?.charAt(0) || 'S'}
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff' }}>{st.name}</h4>
+                      <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-main)' }}>{st.name}</h4>
                       <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Class {st.grade || 12} • {st.email}</span>
                     </div>
                   </div>
@@ -141,7 +141,7 @@ const CounsellorDashboard = ({ user }) => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <span className="metric-label">Assessed Guidance Profile</span>
-                    <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>{selectedStudent.name}</h3>
+                    <h3 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-main)', marginTop: '2px' }}>{selectedStudent.name}</h3>
                   </div>
 
                   <span className="badge badge-high-performer" style={{ fontSize: '13px' }}>

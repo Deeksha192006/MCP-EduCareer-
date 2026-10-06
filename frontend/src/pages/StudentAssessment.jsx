@@ -139,7 +139,7 @@ const StudentAssessment = ({ user }) => {
             <Sparkles size={16} />
             <span>Class 12th Multi-Step Assessment</span>
           </div>
-          <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#ffffff' }}>Student Academic & NLP Mindset Assessment</h1>
+          <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-main)' }}>Student Academic & NLP Mindset Assessment</h1>
           <p className="banner-subtitle">
             Fill out your 12th standard subject marks, skill ratings, interest domains, and natural-language text responses to generate your personalized 12th Course & Career Guidance.
           </p>

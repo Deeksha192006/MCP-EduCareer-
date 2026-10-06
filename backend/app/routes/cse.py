@@ -10,25 +10,15 @@ from app.schemas.cse import (
 )
 from app.database.mongodb import get_database
 
+from app.core.weight_config import weight_config
+
 router = APIRouter(prefix="/cse", tags=["CSE Exploration Module"])
 
 DEFAULT_CSE_GAMES = [
     {
-        "gameId": "cse_logic_01",
-        "gameName": "Shortest Path Challenge",
-        "skillTested": "Logical Thinking & Problem Solving",
-        "score": 0.0,
-        "maxScore": 100.0,
-        "accuracy": 0.0,
-        "timeTaken": 0,
-        "attempts": 0,
-        "difficulty": "medium",
-        "completed": False
-    },
-    {
-        "gameId": "cse_pattern_02",
-        "gameName": "Odd One Out",
-        "skillTested": "Pattern Recognition",
+        "gameId": "cse_xor_gate",
+        "gameName": "XOR Gate Challenge",
+        "skillTested": "Logical Thinking, Boolean Reasoning & Pattern Recognition",
         "score": 0.0,
         "maxScore": 100.0,
         "accuracy": 0.0,
@@ -38,21 +28,9 @@ DEFAULT_CSE_GAMES = [
         "completed": False
     },
     {
-        "gameId": "cse_code_03",
-        "gameName": "Debug the Code",
-        "skillTested": "Programming Logic",
-        "score": 0.0,
-        "maxScore": 100.0,
-        "accuracy": 0.0,
-        "timeTaken": 0,
-        "attempts": 0,
-        "difficulty": "hard",
-        "completed": False
-    },
-    {
-        "gameId": "cse_algo_04",
-        "gameName": "Logic Sequence",
-        "skillTested": "Algorithmic Thinking",
+        "gameId": "cse_river_crossing",
+        "gameName": "Farmer River Crossing",
+        "skillTested": "Problem Solving, Planning & Constraint Reasoning",
         "score": 0.0,
         "maxScore": 100.0,
         "accuracy": 0.0,
@@ -62,9 +40,33 @@ DEFAULT_CSE_GAMES = [
         "completed": False
     },
     {
-        "gameId": "cse_puzzle_05",
-        "gameName": "Algorithm Puzzle",
-        "skillTested": "Problem Solving & Decision Making",
+        "gameId": "cse_water_jug",
+        "gameName": "Water Jug Challenge",
+        "skillTested": "Algorithmic Thinking, Numerical Reasoning & Problem Solving",
+        "score": 0.0,
+        "maxScore": 100.0,
+        "accuracy": 0.0,
+        "timeTaken": 0,
+        "attempts": 0,
+        "difficulty": "medium",
+        "completed": False
+    },
+    {
+        "gameId": "cse_missionaries_cannibals",
+        "gameName": "Missionaries and Cannibals",
+        "skillTested": "Logical Reasoning, Constraint Solving & Planning",
+        "score": 0.0,
+        "maxScore": 100.0,
+        "accuracy": 0.0,
+        "timeTaken": 0,
+        "attempts": 0,
+        "difficulty": "hard",
+        "completed": False
+    },
+    {
+        "gameId": "cse_tower_of_hanoi",
+        "gameName": "Tower of Hanoi",
+        "skillTested": "Algorithmic Thinking, Sequencing, Planning & Problem Solving",
         "score": 0.0,
         "maxScore": 100.0,
         "accuracy": 0.0,
@@ -76,61 +78,107 @@ DEFAULT_CSE_GAMES = [
 ]
 
 def recalculate_skills(game_perf_list: List[Dict[str, Any]]) -> Dict[str, float]:
-    scores = {
-        "logicalThinking": 0.0,
-        "problemSolving": 0.0,
-        "patternRecognition": 0.0,
-        "algorithmicThinking": 0.0,
-        "programmingLogic": 0.0,
-        "decisionMaking": 0.0
-    }
     game_dict = {g["gameId"]: g for g in game_perf_list if g.get("completed")}
-    
-    # cse_logic_01
-    g1 = game_dict.get("cse_logic_01")
+
+    skill_map = {
+        "logicalThinking": [],
+        "booleanReasoning": [],
+        "problemSolving": [],
+        "algorithmicThinking": [],
+        "planning": [],
+        "patternRecognition": [],
+        "constraintSolving": [],
+        "numericalReasoning": [],
+        "sequencing": [],
+        "decisionMaking": [],
+        "programmingLogic": []
+    }
+
+    # 1. cse_xor_gate: Logical Thinking, Boolean Reasoning, Pattern Recognition
+    g1 = game_dict.get("cse_xor_gate")
     if g1:
-        scores["logicalThinking"] += g1["score"] * 0.6
-        scores["problemSolving"] += g1["score"] * 0.4
-    
-    # cse_pattern_02
-    g2 = game_dict.get("cse_pattern_02")
+        s1 = float(g1["score"])
+        skill_map["logicalThinking"].append(s1)
+        skill_map["booleanReasoning"].append(s1)
+        skill_map["patternRecognition"].append(s1)
+
+    # 2. cse_river_crossing: Problem Solving, Planning, Constraint Reasoning
+    g2 = game_dict.get("cse_river_crossing")
     if g2:
-        scores["patternRecognition"] += g2["score"] * 0.8
-        scores["decisionMaking"] += g2["score"] * 0.2
+        s2 = float(g2["score"])
+        skill_map["problemSolving"].append(s2)
+        skill_map["planning"].append(s2)
+        skill_map["constraintSolving"].append(s2)
+        skill_map["logicalThinking"].append(s2)
 
-    # cse_code_03
-    g3 = game_dict.get("cse_code_03")
+    # 3. cse_water_jug: Algorithmic Thinking, Numerical Reasoning, Problem Solving
+    g3 = game_dict.get("cse_water_jug")
     if g3:
-        scores["programmingLogic"] += g3["score"] * 0.8
-        scores["logicalThinking"] += g3["score"] * 0.2
+        s3 = float(g3["score"])
+        skill_map["algorithmicThinking"].append(s3)
+        skill_map["numericalReasoning"].append(s3)
+        skill_map["problemSolving"].append(s3)
+        skill_map["planning"].append(s3)
 
-    # cse_algo_04
-    g4 = game_dict.get("cse_algo_04")
+    # 4. cse_missionaries_cannibals: Logical Reasoning, Constraint Solving, Planning
+    g4 = game_dict.get("cse_missionaries_cannibals")
     if g4:
-        scores["algorithmicThinking"] += g4["score"] * 0.8
-        scores["patternRecognition"] += g4["score"] * 0.2
+        s4 = float(g4["score"])
+        skill_map["logicalThinking"].append(s4)
+        skill_map["constraintSolving"].append(s4)
+        skill_map["planning"].append(s4)
+        skill_map["problemSolving"].append(s4)
 
-    # cse_puzzle_05
-    g5 = game_dict.get("cse_puzzle_05")
+    # 5. cse_tower_of_hanoi: Algorithmic Thinking, Sequencing, Planning, Problem Solving
+    g5 = game_dict.get("cse_tower_of_hanoi")
     if g5:
-        scores["problemSolving"] += g5["score"] * 0.6
-        scores["decisionMaking"] += g5["score"] * 0.4
+        s5 = float(g5["score"])
+        skill_map["algorithmicThinking"].append(s5)
+        skill_map["sequencing"].append(s5)
+        skill_map["planning"].append(s5)
+        skill_map["problemSolving"].append(s5)
 
-    # Clamp scores to 0 - 100 range and round
-    return {k: round(min(100.0, max(0.0, v)), 1) for k, v in scores.items()}
+    # Backward compatibility aliases
+    if skill_map["booleanReasoning"]:
+        skill_map["programmingLogic"] = skill_map["booleanReasoning"]
+    if skill_map["constraintSolving"]:
+        skill_map["decisionMaking"] = skill_map["constraintSolving"]
+
+    res = {}
+    for k, v in skill_map.items():
+        if v:
+            res[k] = round(min(100.0, max(0.0, sum(v) / len(v))), 1)
+        else:
+            res[k] = 0.0
+    return res
 
 def calculate_cse_compatibility(skills: Dict[str, float]) -> float:
-    # Weighted calculation across 6 skill dimensions
     weights = {
         "logicalThinking": 0.20,
         "problemSolving": 0.20,
         "algorithmicThinking": 0.20,
-        "programmingLogic": 0.20,
-        "patternRecognition": 0.10,
-        "decisionMaking": 0.10
+        "planning": 0.15,
+        "constraintSolving": 0.15,
+        "booleanReasoning": 0.10
     }
     total = sum(skills.get(k, 0.0) * w for k, w in weights.items())
     return round(min(100.0, max(0.0, total)), 1)
+
+def ensure_new_game_session(doc: Dict[str, Any]) -> Dict[str, Any]:
+    existing_ids = [g.get("gameId") for g in doc.get("gamePerformance", [])]
+    valid_ids = {"cse_xor_gate", "cse_river_crossing", "cse_water_jug", "cse_missionaries_cannibals", "cse_tower_of_hanoi"}
+    if not valid_ids.issubset(set(existing_ids)):
+        new_perf = []
+        for default_g in DEFAULT_CSE_GAMES:
+            matched = next((g for g in doc.get("gamePerformance", []) if g.get("gameId") == default_g["gameId"]), None)
+            new_perf.append(matched if matched else dict(default_g))
+        doc["gamePerformance"] = new_perf
+        completed_games = [g for g in new_perf if g.get("completed")]
+        doc["gamesAttempted"] = len(completed_games)
+        doc["totalScore"] = round(sum(g.get("score", 0) for g in completed_games) / len(completed_games), 1) if completed_games else 0.0
+        doc["skillScores"] = recalculate_skills(doc["gamePerformance"])
+        doc["cseCompatibilityScore"] = calculate_cse_compatibility(doc["skillScores"])
+    return doc
 
 @router.post("/assessment/start", response_model=CSEAssessmentResponse)
 def start_cse_assessment(req: CSEAssessmentStartRequest):
@@ -145,6 +193,7 @@ def start_cse_assessment(req: CSEAssessmentStartRequest):
         doc = db_inst.db.cse_assessments.find_one({"studentId": student_id})
 
     if doc:
+        doc = ensure_new_game_session(doc)
         doc["id"] = str(doc.get("_id", doc.get("id")))
         return doc
 
@@ -194,6 +243,7 @@ def get_cse_assessment(student_id: str):
         req = CSEAssessmentStartRequest(studentId=student_id)
         return start_cse_assessment(req)
 
+    doc = ensure_new_game_session(doc)
     doc["id"] = str(doc.get("_id", doc.get("id")))
     return doc
 
@@ -212,6 +262,8 @@ def submit_game_performance(req: CSEGameSubmitRequest):
         # Start assessment first
         req_start = CSEAssessmentStartRequest(studentId=student_id)
         doc = start_cse_assessment(req_start)
+    else:
+        doc = ensure_new_game_session(doc)
 
     game_found = False
     for g in doc.get("gamePerformance", []):

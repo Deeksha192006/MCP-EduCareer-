@@ -84,7 +84,7 @@ const CourseCompare = ({ user }) => {
               <Sparkles size={16} />
               <span>Assessment-Driven Course Comparison Tool</span>
             </div>
-            <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#ffffff' }}>Side-by-Side Recommended Degree Course Comparison</h1>
+            <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-main)' }}>Side-by-Side Recommended Degree Course Comparison</h1>
             <p className="banner-subtitle">
               Comparing top degree courses generated directly from your submitted 12th standard academic & mindset assessment.
             </p>
@@ -92,8 +92,8 @@ const CourseCompare = ({ user }) => {
 
           {assessmentGuidance?.primary_recommendation && (
             <div style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-md)', padding: '12px 18px', textAlign: 'right' }}>
-              <span style={{ fontSize: '11px', color: '#34d399', fontWeight: 700, textTransform: 'uppercase' }}>Top Assessment Match</span>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
+              <span style={{ fontSize: '11px', color: '#059669', fontWeight: 700, textTransform: 'uppercase' }}>Top Assessment Match</span>
+              <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-main)', marginTop: '2px' }}>
                 {assessmentGuidance.primary_recommendation.course}
               </div>
             </div>
@@ -137,7 +137,7 @@ const CourseCompare = ({ user }) => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
                   <span className="badge badge-consistent" style={{ marginBottom: '6px' }}>Rank #{idx + 1} • {c.degree_type}</span>
-                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#ffffff' }}>{c.course}</h3>
+                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-main)' }}>{c.course}</h3>
                   <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{c.domain}</span>
                 </div>
 
