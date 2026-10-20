@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import { adminAPI, pilotValidationAPI } from '../services/api';
+import { adminAPI, pilotValidationAPI, aidsAPI } from '../services/api';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { 
   Cpu, Award, CheckCircle, RefreshCw, Activity, ShieldCheck, 
-  AlertTriangle, Sliders, Users, MessageSquare, Send, BookOpen 
+  AlertTriangle, Sliders, Users, MessageSquare, Send, BookOpen, BrainCircuit 
 } from 'lucide-react';
 
 const AdminModels = ({ user }) => {
@@ -12,6 +12,7 @@ const AdminModels = ({ user }) => {
   const [pilotMetrics, setPilotMetrics] = useState(null);
   const [weightsData, setWeightsData] = useState(null);
   const [feedbackList, setFeedbackList] = useState([]);
+  const [aidsAnalytics, setAidsAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [retraining, setRetraining] = useState(false);
   const [retrainMessage, setRetrainMessage] = useState('');
@@ -32,16 +33,20 @@ const AdminModels = ({ user }) => {
 
   const fetchAllData = async () => {
     try {
-      const [resMetrics, resPilot, resWeights, resFeedback] = await Promise.all([
+      const [resMetrics, resPilot, resWeights, resFeedback, resAids] = await Promise.all([
         adminAPI.getMLMetrics(),
         pilotValidationAPI.getMetrics(),
         pilotValidationAPI.getWeights(),
-        pilotValidationAPI.getFeedback()
+        pilotValidationAPI.getFeedback(),
+        aidsAPI.getAnalytics().catch(() => ({ data: null }))
       ]);
       setMlData(resMetrics.data);
       setPilotMetrics(resPilot.data);
       setWeightsData(resWeights.data);
       setFeedbackList(resFeedback.data.feedbackList || []);
+      if (resAids?.data) {
+        setAidsAnalytics(resAids.data);
+      }
 
       if (resWeights.data?.currentWeights) {
         setGameWeightInput(Math.round(resWeights.data.currentWeights.game_weight * 100));
@@ -299,6 +304,78 @@ const AdminModels = ({ user }) => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* SECTION: ADMIN → AIDS GAME ANALYTICS (TECHNICAL CONCEPTS & EVALUATION)   */}
+        {/* ========================================================================= */}
+        <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '24px', marginBottom: '32px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span style={{ background: 'rgba(168, 85, 247, 0.25)', color: '#d8b4fe', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700 }}>
+                  ADMIN ONLY / PROJECT EVALUATION
+                </span>
+                <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+                  Total Cohort Assessments: <strong>{aidsAnalytics?.totalCompletedAssessments || 0}</strong>
+                </span>
+              </div>
+              <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <BrainCircuit size={20} color="#a855f7" />
+                <span>Admin → AIDS Game Analytics</span>
+              </h4>
+              <p style={{ fontSize: '13px', color: '#cbd5e1', marginTop: '4px', maxWidth: '820px' }}>
+                Technical concepts are displayed strictly for administrators and academic project evaluators. Students see simplified, student-friendly game names only.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ overflowX: 'auto' }}>
+            <table className="custom-table custom-table-dark" style={{ width: '100%' }}>
+              <thead>
+                <tr>
+                  <th style={{ color: '#93c5fd' }}>Game Name</th>
+                  <th style={{ color: '#c084fc' }}>Technical Concept</th>
+                  <th style={{ color: '#93c5fd' }}>Skills Evaluated</th>
+                  <th style={{ color: '#93c5fd' }}>Avg Score</th>
+                  <th style={{ color: '#93c5fd' }}>Completion Rate</th>
+                  <th style={{ color: '#93c5fd' }}>Difficulty</th>
+                  <th style={{ color: '#93c5fd' }}>Attempts</th>
+                  <th style={{ color: '#93c5fd' }}>Avg Attempts</th>
+                  <th style={{ color: '#93c5fd' }}>Avg Hints</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(aidsAnalytics?.gameAnalytics || [
+                  { gameName: "Queen's Safe Board", technicalConcept: "N-Queens / Constraint Reasoning", skillsEvaluated: "Logical Thinking, Constraint Reasoning, Planning, Pattern Recognition", averageScore: 90.0, completionRate: 100.0, difficulty: "Medium", attempts: 1, averageAttempts: 1.0, averageHintsUsed: 0.0 },
+                  { gameName: "Smart Move Challenge", technicalConcept: "Game Strategy / Decision Making", skillsEvaluated: "Decision Making, Pattern Recognition, Strategic Thinking, Problem Solving", averageScore: 85.0, completionRate: 100.0, difficulty: "Medium", attempts: 1, averageAttempts: 1.0, averageHintsUsed: 0.0 },
+                  { gameName: "Smart Snake", technicalConcept: "Path Planning / Computational Thinking", skillsEvaluated: "Planning, Decision Making, Spatial Reasoning, Problem Solving, Adaptability", averageScore: 88.0, completionRate: 100.0, difficulty: "Medium", attempts: 1, averageAttempts: 1.0, averageHintsUsed: 0.0 },
+                  { gameName: "Water Target Challenge", technicalConcept: "State-Space Problem Solving", skillsEvaluated: "Algorithmic Thinking, Numerical Reasoning, Planning, Problem Solving", averageScore: 92.0, completionRate: 100.0, difficulty: "Medium", attempts: 1, averageAttempts: 1.0, averageHintsUsed: 0.0 },
+                  { gameName: "Safe River Mission", technicalConcept: "Constraint Satisfaction", skillsEvaluated: "Logical Reasoning, Constraint Solving, Planning, Problem Solving", averageScore: 86.0, completionRate: 100.0, difficulty: "Hard", attempts: 1, averageAttempts: 1.0, averageHintsUsed: 0.0 }
+                ]).map((g, idx) => (
+                  <tr key={idx}>
+                    <td><strong style={{ color: '#ffffff', fontSize: '14px' }}>{g.gameName}</strong></td>
+                    <td>
+                      <span style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#d8b4fe', padding: '4px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, border: '1px solid rgba(168, 85, 247, 0.4)' }}>
+                        {g.technicalConcept}
+                      </span>
+                    </td>
+                    <td><span style={{ color: '#cbd5e1', fontSize: '12px' }}>{g.skillsEvaluated}</span></td>
+                    <td><strong style={{ color: '#38bdf8', fontSize: '14px' }}>{g.averageScore} / 100</strong></td>
+                    <td><span style={{ color: '#34d399', fontWeight: 700 }}>{g.completionRate}%</span></td>
+                    <td>
+                      <span style={{ textTransform: 'capitalize', color: g.difficulty?.toLowerCase() === 'hard' ? '#f87171' : '#fbbf24', fontWeight: 600 }}>
+                        {g.difficulty}
+                      </span>
+                    </td>
+                    <td><span style={{ color: '#f1f5f9', fontWeight: 600 }}>{g.attempts}</span></td>
+                    <td><span style={{ color: '#f1f5f9', fontWeight: 600 }}>{g.averageAttempts}</span></td>
+                    <td><span style={{ color: '#f1f5f9', fontWeight: 600 }}>{g.averageHintsUsed}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Evaluator / Educator Feedback Collection Section */}

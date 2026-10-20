@@ -10,133 +10,163 @@ from app.schemas.aids import (
 )
 from app.data.aids_quiz_bank import AIDS_QUIZ_QUESTIONS
 from app.database.mongodb import get_database
+from app.core.weight_config import weight_config
 
 router = APIRouter(prefix="/engineering/aids", tags=["AIDS Exploration Module"])
 
-# Configurable Weights Object (60% Game, 40% Quiz)
-AIDS_CONFIG_WEIGHTS = {
-    "game_weight": 0.60,
-    "quiz_weight": 0.40
-}
+AIDS_GAME_METADATA = [
+    {
+        "gameId": "aids_game_queens",
+        "gameName": "Queen's Safe Board",
+        "technicalConcept": "N-Queens / Constraint Reasoning",
+        "skillsEvaluated": "Logical Thinking, Constraint Reasoning, Planning, Pattern Recognition",
+        "difficulty": "medium",
+    },
+    {
+        "gameId": "aids_game_tictactoe",
+        "gameName": "Smart Move Challenge",
+        "technicalConcept": "Game Strategy / Decision Making",
+        "skillsEvaluated": "Decision Making, Pattern Recognition, Strategic Thinking, Problem Solving",
+        "difficulty": "medium",
+    },
+    {
+        "gameId": "aids_game_snake",
+        "gameName": "Smart Snake",
+        "technicalConcept": "Path Planning / Computational Thinking",
+        "skillsEvaluated": "Planning, Decision Making, Spatial Reasoning, Problem Solving, Adaptability",
+        "difficulty": "medium",
+    },
+    {
+        "gameId": "aids_game_waterjug",
+        "gameName": "Water Target Challenge",
+        "technicalConcept": "State-Space Problem Solving",
+        "skillsEvaluated": "Algorithmic Thinking, Numerical Reasoning, Planning, Problem Solving",
+        "difficulty": "medium",
+    },
+    {
+        "gameId": "aids_game_river",
+        "gameName": "Safe River Mission",
+        "technicalConcept": "Constraint Satisfaction",
+        "skillsEvaluated": "Logical Reasoning, Constraint Solving, Planning, Problem Solving",
+        "difficulty": "hard",
+    }
+]
 
 DEFAULT_AIDS_LEVELS = [
     {
-        "levelId": "aids_lvl_1",
-        "levelName": "Level 1 — Find the Pattern",
-        "skillTested": "Pattern Recognition",
-        "difficulty": "easy",
+        "levelId": g["gameId"],
+        "levelName": g["gameName"],
+        "skillTested": g["skillsEvaluated"],
+        "difficulty": g["difficulty"],
         "score": 0.0,
         "accuracy": 0.0,
         "timeTaken": 0,
         "attempts": 0,
-        "completed": False
-    },
-    {
-        "levelId": "aids_lvl_2",
-        "levelName": "Level 2 — Data Detective",
-        "skillTested": "Data Interpretation",
-        "difficulty": "medium",
-        "score": 0.0,
-        "accuracy": 0.0,
-        "timeTaken": 0,
-        "attempts": 0,
-        "completed": False
-    },
-    {
-        "levelId": "aids_lvl_3",
-        "levelName": "Level 3 — Find the Anomaly",
-        "skillTested": "Anomaly Detection & Analytical Thinking",
-        "difficulty": "medium",
-        "score": 0.0,
-        "accuracy": 0.0,
-        "timeTaken": 0,
-        "attempts": 0,
-        "completed": False
-    },
-    {
-        "levelId": "aids_lvl_4",
-        "levelName": "Level 4 — Prediction Challenge",
-        "skillTested": "Prediction Ability",
-        "difficulty": "medium",
-        "score": 0.0,
-        "accuracy": 0.0,
-        "timeTaken": 0,
-        "attempts": 0,
-        "completed": False
-    },
-    {
-        "levelId": "aids_lvl_5",
-        "levelName": "Level 5 — Data Decision Challenge",
-        "skillTested": "Analytical Thinking & Decision Making",
-        "difficulty": "hard",
-        "score": 0.0,
-        "accuracy": 0.0,
-        "timeTaken": 0,
-        "attempts": 0,
-        "completed": False
-    },
-    {
-        "levelId": "aids_lvl_6",
-        "levelName": "Level 6 — Correlation Thinking",
-        "skillTested": "Analytical Reasoning",
-        "difficulty": "hard",
-        "score": 0.0,
-        "accuracy": 0.0,
-        "timeTaken": 0,
-        "attempts": 0,
+        "hintsUsed": 0,
         "completed": False
     }
+    for g in AIDS_GAME_METADATA
 ]
 
 def calculate_aids_game_skills(level_results: List[Dict[str, Any]]) -> Dict[str, float]:
     skills = {
-        "dataInterpretation": 0.0,
+        "logicalThinking": 0.0,
+        "constraintReasoning": 0.0,
+        "planning": 0.0,
         "patternRecognition": 0.0,
+        "decisionMaking": 0.0,
+        "problemSolving": 0.0,
+        "algorithmicThinking": 0.0,
+        "computationalThinking": 0.0,
+        "spatialReasoning": 0.0,
+        # Legacy keys for backward compatibility
+        "dataInterpretation": 0.0,
         "analyticalThinking": 0.0,
         "logicalReasoning": 0.0,
         "predictionAbility": 0.0,
-        "problemSolving": 0.0,
-        "decisionMaking": 0.0
     }
     lvl_map = {l["levelId"]: l for l in level_results if l.get("completed")}
 
-    # L1: Find Pattern -> Pattern Recognition (70%), Logical Reasoning (30%)
+    # Game 1: Queen's Safe Board (N-Queens / Constraint Reasoning)
+    g1 = lvl_map.get("aids_game_queens")
+    if g1:
+        s = g1.get("score", 0.0)
+        skills["logicalThinking"] += s * 0.35
+        skills["constraintReasoning"] += s * 0.35
+        skills["planning"] += s * 0.15
+        skills["patternRecognition"] += s * 0.15
+        skills["logicalReasoning"] += s * 0.5
+        skills["analyticalThinking"] += s * 0.5
+
+    # Game 2: Smart Move Challenge (Tic-Tac-Toe / Decision Making / Pattern Recognition)
+    g2 = lvl_map.get("aids_game_tictactoe")
+    if g2:
+        s = g2.get("score", 0.0)
+        skills["decisionMaking"] += s * 0.4
+        skills["patternRecognition"] += s * 0.3
+        skills["problemSolving"] += s * 0.3
+        skills["analyticalThinking"] += s * 0.4
+
+    # Game 3: Smart Snake (Snake / Path Planning / Computational Thinking)
+    g3 = lvl_map.get("aids_game_snake")
+    if g3:
+        s = g3.get("score", 0.0)
+        skills["planning"] += s * 0.3
+        skills["spatialReasoning"] += s * 0.3
+        skills["computationalThinking"] += s * 0.2
+        skills["problemSolving"] += s * 0.2
+        skills["decisionMaking"] += s * 0.2
+
+    # Game 4: Water Target Challenge (Water Jug / Algorithmic Reasoning)
+    g4 = lvl_map.get("aids_game_waterjug")
+    if g4:
+        s = g4.get("score", 0.0)
+        skills["algorithmicThinking"] += s * 0.4
+        skills["computationalThinking"] += s * 0.3
+        skills["planning"] += s * 0.15
+        skills["problemSolving"] += s * 0.15
+        skills["dataInterpretation"] += s * 0.5
+
+    # Game 5: Safe River Mission (Missionaries & Cannibals / Constraint Reasoning)
+    g5 = lvl_map.get("aids_game_river")
+    if g5:
+        s = g5.get("score", 0.0)
+        skills["constraintReasoning"] += s * 0.4
+        skills["logicalThinking"] += s * 0.3
+        skills["planning"] += s * 0.15
+        skills["problemSolving"] += s * 0.15
+        skills["logicalReasoning"] += s * 0.5
+
+    # Legacy levels aids_lvl_1 through aids_lvl_6 support for test compatibility:
     l1 = lvl_map.get("aids_lvl_1")
     if l1:
         skills["patternRecognition"] += l1["score"] * 0.7
         skills["logicalReasoning"] += l1["score"] * 0.3
-
-    # L2: Data Detective -> Data Interpretation (60%), Problem Solving (40%)
+        skills["logicalThinking"] += l1["score"] * 0.3
     l2 = lvl_map.get("aids_lvl_2")
     if l2:
         skills["dataInterpretation"] += l2["score"] * 0.6
         skills["problemSolving"] += l2["score"] * 0.4
-
-    # L3: Find Anomaly -> Pattern Recognition (30%), Analytical Thinking (30%), Problem Solving (40%)
     l3 = lvl_map.get("aids_lvl_3")
     if l3:
         skills["patternRecognition"] += l3["score"] * 0.3
         skills["analyticalThinking"] += l3["score"] * 0.3
         skills["problemSolving"] += l3["score"] * 0.4
-
-    # L4: Prediction Challenge -> Prediction Ability (70%), Logical Reasoning (30%)
     l4 = lvl_map.get("aids_lvl_4")
     if l4:
         skills["predictionAbility"] += l4["score"] * 0.7
         skills["logicalReasoning"] += l4["score"] * 0.3
-
-    # L5: Data Decision Challenge -> Decision Making (70%), Analytical Thinking (30%)
+        skills["logicalThinking"] += l4["score"] * 0.3
     l5 = lvl_map.get("aids_lvl_5")
     if l5:
         skills["decisionMaking"] += l5["score"] * 0.7
         skills["analyticalThinking"] += l5["score"] * 0.3
-
-    # L6: Correlation Thinking -> Analytical Thinking (40%), Data Interpretation (30%), Logical Reasoning (30%)
     l6 = lvl_map.get("aids_lvl_6")
     if l6:
         skills["analyticalThinking"] += l6["score"] * 0.4
         skills["dataInterpretation"] += l6["score"] * 0.3
         skills["logicalReasoning"] += l6["score"] * 0.3
+        skills["logicalThinking"] += l6["score"] * 0.3
 
     return {k: round(min(100.0, max(0.0, v)), 1) for k, v in skills.items()}
 
@@ -382,10 +412,12 @@ def complete_aids_assessment(req: Dict[str, str]):
     game_score = doc.get("round1", {}).get("gameScore", 0.0)
     quiz_score = doc.get("round2", {}).get("quizScore", 0.0)
 
-    # Configurable formula: (Game Score x 0.60) + (Quiz Score x 0.40)
+    # Configurable formula: (Game Score x Game Weight) + (Quiz Score x Written Weight)
+    # Uses central weight_config (defaults to 75% Game, 25% Quiz)
+    gw = weight_config.game_weight
+    ww = weight_config.written_weight
     final_score = round(
-        (game_score * AIDS_CONFIG_WEIGHTS["game_weight"]) + 
-        (quiz_score * AIDS_CONFIG_WEIGHTS["quiz_weight"]),
+        (game_score * gw) + (quiz_score * ww),
         1
     )
 
@@ -400,13 +432,19 @@ def complete_aids_assessment(req: Dict[str, str]):
 
     r1_skills = doc.get("round1", {}).get("skillScores", {})
     skill_profile = {
-        "dataInterpretation": r1_skills.get("dataInterpretation", 0.0),
+        "logicalThinking": r1_skills.get("logicalThinking", 0.0),
+        "constraintReasoning": r1_skills.get("constraintReasoning", 0.0),
+        "planning": r1_skills.get("planning", 0.0),
         "patternRecognition": r1_skills.get("patternRecognition", 0.0),
+        "decisionMaking": r1_skills.get("decisionMaking", 0.0),
+        "problemSolving": r1_skills.get("problemSolving", 0.0),
+        "algorithmicThinking": r1_skills.get("algorithmicThinking", 0.0),
+        "computationalThinking": r1_skills.get("computationalThinking", 0.0),
+        "spatialReasoning": r1_skills.get("spatialReasoning", 0.0),
+        "dataInterpretation": r1_skills.get("dataInterpretation", 0.0),
         "analyticalThinking": r1_skills.get("analyticalThinking", 0.0),
         "logicalReasoning": r1_skills.get("logicalReasoning", 0.0),
         "predictionAbility": r1_skills.get("predictionAbility", 0.0),
-        "problemSolving": r1_skills.get("problemSolving", 0.0),
-        "decisionMaking": r1_skills.get("decisionMaking", 0.0),
         "technicalKnowledge": quiz_score
     }
 
@@ -420,24 +458,30 @@ def complete_aids_assessment(req: Dict[str, str]):
 
     # Personalized Learning Suggestions
     suggestion_map = {
-        "dataInterpretation": "Practice interpreting data tables, bar charts, and scatter plots.",
+        "logicalThinking": "Practice multi-step propositional logic puzzles and constraint games.",
+        "constraintReasoning": "Solve spatial and state-constraint challenges like safe board placements.",
+        "planning": "Engage in forward-looking planning scenarios and multi-turn strategy puzzles.",
         "patternRecognition": "Work through numerical sequence patterns and visual trend exercises.",
-        "analyticalThinking": "Practice multi-variable data reasoning and business KPI analysis.",
+        "decisionMaking": "Analyze trade-offs in strategic decision-making and pattern blocking.",
+        "problemSolving": "Work through state-space search and step-by-step problem reduction.",
+        "algorithmicThinking": "Explore systematic state-space problem solving and invariant logic.",
+        "computationalThinking": "Decompose complex path obstacles into simple computational rules.",
+        "spatialReasoning": "Practice real-time navigational planning and collision anticipation.",
+        "dataInterpretation": "Practice interpreting data tables, bar charts, and scatter plots.",
+        "analyticalThinking": "Practice multi-variable data reasoning and KPI analysis.",
         "logicalReasoning": "Solve logic puzzles and conditional decision-tree scenarios.",
         "predictionAbility": "Explore basic linear trend extrapolation and predictive modeling principles.",
-        "problemSolving": "Work through anomaly detection exercises in noisy tabular datasets.",
-        "decisionMaking": "Analyze trade-offs in data-driven product investment and business analytics.",
-        "technicalKnowledge": "Explore introductory machine learning (supervised vs unsupervised) and basic statistics."
+        "technicalKnowledge": "Explore introductory artificial intelligence, machine learning, and basic statistics."
     }
 
     learning_suggestions = [suggestion_map[sk] for sk in improvement_areas if sk in suggestion_map]
     if not learning_suggestions:
         learning_suggestions = [
-            "Practice data interpretation",
-            "Learn basic statistics",
-            "Explore simple machine-learning concepts",
-            "Practice reading charts and graphs",
-            "Try small data-analysis projects"
+            "Practice logical thinking and constraint puzzles",
+            "Learn basic artificial intelligence and data science concepts",
+            "Explore algorithmic thinking and problem decomposition",
+            "Practice decision making with interactive strategic games",
+            "Try small path-planning and pattern-recognition projects"
         ]
 
     doc["finalResult"] = {
@@ -454,14 +498,18 @@ def complete_aids_assessment(req: Dict[str, str]):
     aids_data = {
         "aids_game_score": game_score,
         "aids_quiz_score": quiz_score,
-        "aids_data_interpretation_score": skill_profile["dataInterpretation"],
-        "aids_pattern_score": skill_profile["patternRecognition"],
-        "aids_analytical_score": skill_profile["analyticalThinking"],
-        "aids_logical_score": skill_profile["logicalReasoning"],
-        "aids_prediction_score": skill_profile["predictionAbility"],
-        "aids_problem_solving_score": skill_profile["problemSolving"],
-        "aids_decision_score": skill_profile["decisionMaking"],
-        "aids_technical_score": skill_profile["technicalKnowledge"],
+        "aids_logical_score": skill_profile.get("logicalThinking", 0.0),
+        "aids_constraint_score": skill_profile.get("constraintReasoning", 0.0),
+        "aids_planning_score": skill_profile.get("planning", 0.0),
+        "aids_pattern_score": skill_profile.get("patternRecognition", 0.0),
+        "aids_decision_score": skill_profile.get("decisionMaking", 0.0),
+        "aids_problem_solving_score": skill_profile.get("problemSolving", 0.0),
+        "aids_algorithmic_score": skill_profile.get("algorithmicThinking", 0.0),
+        "aids_computational_score": skill_profile.get("computationalThinking", 0.0),
+        "aids_spatial_score": skill_profile.get("spatialReasoning", 0.0),
+        "aids_data_interpretation_score": skill_profile.get("dataInterpretation", 0.0),
+        "aids_analytical_score": skill_profile.get("analyticalThinking", 0.0),
+        "aids_technical_score": skill_profile.get("technicalKnowledge", 0.0),
         "aids_exploration_score": final_score,
         "completed_at": doc["completedAt"]
     }
@@ -516,6 +564,42 @@ def get_aids_analytics():
     completed = [a for a in assessments if a.get("completedAt") or a.get("round1", {}).get("completed")]
     total_count = len(completed)
 
+    # Calculate AIDS Game Analytics for Admin side
+    game_analytics_list = []
+    for meta in AIDS_GAME_METADATA:
+        gid = meta["gameId"]
+        matching_levels = []
+        for a in completed:
+            for l in a.get("round1", {}).get("levelResults", []):
+                if l.get("levelId") == gid:
+                    matching_levels.append(l)
+
+        attempts_sum = sum(l.get("attempts", 1) for l in matching_levels)
+        hints_sum = sum(l.get("hintsUsed", 0) for l in matching_levels)
+        completed_matching = [l for l in matching_levels if l.get("completed")]
+        scores_sum = sum(l.get("score", 0.0) for l in completed_matching)
+        
+        n_completed = len(completed_matching)
+        n_total = len(matching_levels)
+        
+        avg_score = round(scores_sum / n_completed, 1) if n_completed > 0 else 0.0
+        avg_attempts = round(attempts_sum / n_total, 1) if n_total > 0 else 1.0
+        avg_hints = round(hints_sum / n_total, 1) if n_total > 0 else 0.0
+        comp_rate = round((n_completed / n_total) * 100, 1) if n_total > 0 else (100.0 if total_count > 0 else 0.0)
+
+        game_analytics_list.append({
+            "gameId": gid,
+            "gameName": meta["gameName"],
+            "technicalConcept": meta["technicalConcept"],
+            "skillsEvaluated": meta["skillsEvaluated"],
+            "averageScore": avg_score,
+            "completionRate": comp_rate,
+            "difficulty": meta["difficulty"],
+            "attempts": attempts_sum,
+            "averageAttempts": avg_attempts,
+            "averageHintsUsed": avg_hints
+        })
+
     if total_count == 0:
         return {
             "totalCompletedAssessments": 0,
@@ -529,7 +613,8 @@ def get_aids_analytics():
             "averageTechnicalKnowledge": 0.0,
             "averageCompletionTime": 0.0,
             "levelDifficultySummary": [],
-            "quizTopicPerformanceSummary": []
+            "quizTopicPerformanceSummary": [],
+            "gameAnalytics": game_analytics_list
         }
 
     avg_aids = round(sum(a.get("finalResult", {}).get("explorationScore", 0) for a in completed) / total_count, 1)
@@ -592,7 +677,8 @@ def get_aids_analytics():
         "averageTechnicalKnowledge": avg_tech,
         "averageCompletionTime": avg_time,
         "levelDifficultySummary": lvl_summary,
-        "quizTopicPerformanceSummary": topic_summary
+        "quizTopicPerformanceSummary": topic_summary,
+        "gameAnalytics": game_analytics_list
     }
 
 @router.get("/history/{student_id}")

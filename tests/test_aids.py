@@ -19,28 +19,28 @@ def test_aids_assessment_flow():
     start_data = start_res.json()
     assert start_data["studentId"] == student_id
     assert start_data["department"] == "AIDS"
-    assert len(start_data["round1"]["levelResults"]) == 6
+    assert len(start_data["round1"]["levelResults"]) == 5
 
-    # 2. Submit Round 1 Game Performance (Data Detective Challenge)
+    # 2. Submit Round 1 Game Performance (5 Interactive AIDS Games)
     l_results = [
-        {"levelId": "aids_lvl_1", "levelName": "L1", "skillTested": "Pattern Recognition", "difficulty": "easy", "score": 90.0, "accuracy": 1.0, "timeTaken": 12, "attempts": 1, "completed": True},
-        {"levelId": "aids_lvl_2", "levelName": "L2", "skillTested": "Data Interpretation", "difficulty": "medium", "score": 85.0, "accuracy": 1.0, "timeTaken": 18, "attempts": 1, "completed": True},
-        {"levelId": "aids_lvl_3", "levelName": "L3", "skillTested": "Anomaly Detection", "difficulty": "medium", "score": 88.0, "accuracy": 1.0, "timeTaken": 15, "attempts": 1, "completed": True},
-        {"levelId": "aids_lvl_4", "levelName": "L4", "skillTested": "Prediction Ability", "difficulty": "medium", "score": 92.0, "accuracy": 1.0, "timeTaken": 20, "attempts": 1, "completed": True},
-        {"levelId": "aids_lvl_5", "levelName": "L5", "skillTested": "Data Decision Challenge", "difficulty": "hard", "score": 85.0, "accuracy": 1.0, "timeTaken": 25, "attempts": 1, "completed": True},
-        {"levelId": "aids_lvl_6", "levelName": "L6", "skillTested": "Correlation Thinking", "difficulty": "hard", "score": 90.0, "accuracy": 1.0, "timeTaken": 22, "attempts": 1, "completed": True}
+        {"levelId": "aids_game_queens", "levelName": "Queen's Safe Board", "skillTested": "Logical Thinking, Constraint Reasoning", "difficulty": "medium", "score": 90.0, "accuracy": 1.0, "timeTaken": 25, "attempts": 1, "hintsUsed": 0, "completed": True},
+        {"levelId": "aids_game_tictactoe", "levelName": "Smart Move Challenge", "skillTested": "Decision Making, Pattern Recognition", "difficulty": "medium", "score": 85.0, "accuracy": 1.0, "timeTaken": 18, "attempts": 1, "hintsUsed": 0, "completed": True},
+        {"levelId": "aids_game_snake", "levelName": "Smart Snake", "skillTested": "Planning, Spatial Reasoning", "difficulty": "medium", "score": 88.0, "accuracy": 1.0, "timeTaken": 30, "attempts": 1, "hintsUsed": 0, "completed": True},
+        {"levelId": "aids_game_waterjug", "levelName": "Water Target Challenge", "skillTested": "Algorithmic Thinking, Numerical Reasoning", "difficulty": "medium", "score": 92.0, "accuracy": 1.0, "timeTaken": 20, "attempts": 1, "hintsUsed": 0, "completed": True},
+        {"levelId": "aids_game_river", "levelName": "Safe River Mission", "skillTested": "Constraint Reasoning, Planning", "difficulty": "hard", "score": 86.0, "accuracy": 1.0, "timeTaken": 35, "attempts": 1, "hintsUsed": 0, "completed": True}
     ]
     r1_res = client.post("/api/engineering/aids/game/submit", json={
         "studentId": student_id,
         "levelResults": l_results,
-        "totalTime": 112
+        "totalTime": 128
     })
     assert r1_res.status_code == 200
     r1_data = r1_res.json()
     assert r1_data["round1"]["completed"] is True
     assert r1_data["round1"]["gameScore"] > 0
-    assert "dataInterpretation" in r1_data["round1"]["skillScores"]
-    assert "patternRecognition" in r1_data["round1"]["skillScores"]
+    assert "logicalThinking" in r1_data["round1"]["skillScores"]
+    assert "constraintReasoning" in r1_data["round1"]["skillScores"]
+    assert "algorithmicThinking" in r1_data["round1"]["skillScores"]
 
     # 3. Fetch Quiz Questions
     q_res = client.get("/api/engineering/aids/quiz/questions")
@@ -73,7 +73,7 @@ def test_aids_assessment_flow():
     assert comp_res.status_code == 200
     comp_data = comp_res.json()
     assert comp_data["completedAt"] is not None
-    # Game ~88.3 * 0.6 + Quiz 100 * 0.4 = ~93.0% -> Strong Skill Alignment
+    # 75:25 weighting formula: Game ~88.2 * 0.75 + Quiz 100 * 0.25 = ~91.15% -> Strong Skill Alignment
     assert comp_data["finalResult"]["explorationScore"] > 80.0
     assert comp_data["finalResult"]["compatibilityBand"] == "Strong Skill Alignment"
     assert len(comp_data["finalResult"]["strengths"]) >= 1
@@ -88,3 +88,8 @@ def test_aids_assessment_flow():
     assert analytics_res.status_code == 200
     analytics_data = analytics_res.json()
     assert analytics_data["totalCompletedAssessments"] >= 1
+    assert "gameAnalytics" in analytics_data
+    assert len(analytics_data["gameAnalytics"]) == 5
+    # Verify technical concepts are exposed in admin analytics
+    concepts = [g["technicalConcept"] for g in analytics_data["gameAnalytics"]]
+    assert "N-Queens / Constraint Reasoning" in concepts
